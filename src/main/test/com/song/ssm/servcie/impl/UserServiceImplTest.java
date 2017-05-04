@@ -17,10 +17,17 @@ import com.song.ssm.model.User;
 import com.song.ssm.servcie.UserService;
 
 /**
+ * 四类：
+ * 1.带事务 ：自动会回滚，可以多次执行，数据库中不会有脏数据
+ * 2.多线程 ：注意此时的事务不能用上面的方式，要单独写方法删除 @after,且要把上面的注解删除掉
+ * 3.外部请求 ：自己虚拟实现一个，配置到配置文件中管理
+ * 4.复杂参数 ：用mock，如：MockHttpServletRequest
+ *
+ *
  * Created by zhengwu on 2017/5/4.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring-mvc.xml", "classpath:spring-mybatis.xml"})
+@ContextConfiguration(locations = { "classpath:spring-mvc.xml", "classpath:spring-mybatis.xml" })
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
 public class UserServiceImplTest {
@@ -72,5 +79,11 @@ public class UserServiceImplTest {
             List<User> list = userService.showUser();
             System.out.println(list);
         }
+    }
+
+    @Test
+    public void test2() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
     }
 }
