@@ -1,14 +1,13 @@
 package com.song.ssm.servcie.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.song.ssm.mapper.UserMapper;
 import com.song.ssm.model.User;
+import com.song.ssm.model.UserExample;
 import com.song.ssm.servcie.UserService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by zhengwu on 2017/3/19.
@@ -32,5 +31,25 @@ public class UserServiceImpl implements UserService {
 
     public void deleteUserById(Long id) {
         userMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public void deleteUsers(List<User> users) {
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+
+        for (User user : users) {
+            criteria.andUserNameEqualTo(user.getUserName());
+            userMapper.deleteByExample(example);
+        }
+
+    }
+
+    @Override
+    public void deleteUserByName(String name) {
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+        criteria.andUserNameEqualTo(name);
+        userMapper.deleteByExample(example);
     }
 }

@@ -27,13 +27,13 @@
         </property>
     </bean>
     <!-- 引入tiles配置文件 -->
-    <bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
-        <property name="definitions">
-            <list>
-                <value>/WEB-INF/tiles.xml</value>
-            </list>
-        </property>
-    </bean>
+    <!--<bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">-->
+        <!--<property name="definitions">-->
+            <!--<list>-->
+                <!--<value>/WEB-INF/tiles.xml</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
     <!-- 配置视图解析器 -->
     <!--<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">-->
     <!--<property name="viewClass">-->
@@ -41,7 +41,7 @@
     <!--</property>-->
     <!--</bean>-->
     <!--这样配也可以,上面配也可以-->
-    <bean class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"/>
+    <!--<bean class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"/>-->
 
     <!--如果上面解析器找不到，再调用这个视图解析器-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

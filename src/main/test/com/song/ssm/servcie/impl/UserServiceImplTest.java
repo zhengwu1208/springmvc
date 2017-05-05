@@ -1,5 +1,6 @@
 package com.song.ssm.servcie.impl;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -22,14 +23,14 @@ import com.song.ssm.servcie.UserService;
  * 2.多线程 ：注意此时的事务不能用上面的方式，要单独写方法删除 @after,且要把上面的注解删除掉
  * 3.外部请求 ：自己虚拟实现一个，配置到配置文件中管理
  * 4.复杂参数 ：用mock，如：MockHttpServletRequest
- *
- *
+ * <p>
+ * <p>
  * Created by zhengwu on 2017/5/4.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring-mvc.xml", "classpath:spring-mybatis.xml" })
-@TransactionConfiguration(defaultRollback = true)
-@Transactional
+@ContextConfiguration(locations = {"classpath:spring-mvc.xml", "classpath:spring-mybatis.xml"})
+//@TransactionConfiguration(defaultRollback = true)
+//@Transactional
 public class UserServiceImplTest {
     @Autowired
     private UserService userService;
@@ -42,7 +43,10 @@ public class UserServiceImplTest {
 
     @Test
     public void testInsertUser() throws Exception {
-
+        User user = new User();
+        user.setUserName("songzhengwu");
+        user.setUserPhone("13758450455");
+        userService.insertUser(user);
     }
 
     /**
@@ -51,39 +55,59 @@ public class UserServiceImplTest {
      */
     @After
     public void destroy() {
-    }
-
-    /**
-     * 多线程不会回滚
-     * @throws InterruptedException
-     */
-    @Test
-    private void test1() throws InterruptedException {
-        for (int i = 0; i < 10; i++) {
-            new Thread(new ExecuteThread()).start();
-            latch.countDown();
-        }
-        Thread.sleep(3000);
+        userService.deleteUserByName("songzhengwu");
     }
 
     private CountDownLatch latch = new CountDownLatch(10);
 
-    private class ExecuteThread implements Runnable {
+    /**
+     * 多线程不会回滚
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void test1() throws InterruptedException {
+        for (int i = 0; i < 10; i++) {
+            new Thread(new ExecuteThread()).start();
+            latch.countDown();
+        }
+        Thread.sleep(2000);
+//        try {
+//            System.in.read();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
 
+    private class ExecuteThread implements Runnable {
         public void run() {
             try {
                 latch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            User user1 = new User();
+            user1.setUserName("songzhengwu");
+            user1.setUserPhone("13758450455");
+            userService.insertUser(user1);
+
             List<User> list = userService.showUser();
-            System.out.println(list);
+
+
+            for (User user : list) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread().getName() + "===" + user);
+            }
         }
     }
 
     @Test
     public void test2() {
         MockHttpServletRequest request = new MockHttpServletRequest();
-
     }
 }
